@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kronofogden App</title>
+
+<style>
+*{
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+background:#0f1115;
+margin:0;
+padding:0;
+color:white;
+}
+
+.container{
+max-width:1100px;
+margin:30px auto;
+padding:20px;
+}
+
+.hero{
+background:linear-gradient(135deg,#7f1d1d,#991b1b,#1e293b);
+padding:25px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+
+.hero h1{
+margin:0;
+font-size:18px;
+opacity:0.9;
+}
+
+.bigDebt{
+font-size:48px;
+font-weight:bold;
+margin:10px 0;
+}
+
+.heroText{
+color:#fecaca;
+margin-top:8px;
+}
+
+.progressBox{
+margin-top:20px;
+}
+
+.progressTop{
+display:flex;
+justify-content:space-between;
+margin-bottom:8px;
+font-size:14px;
+}
+
+.progressBar{
+width:100%;
+height:14px;
+background:rgba(255,255,255,0.18);
+border-radius:999px;
+overflow:hidden;
+}
+
+.progressFill{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#22c55e,#4ade80);
+transition:0.3s;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:#1b1f27;
+padding:20px;
+border-radius:14px;
+box-shadow:0 8px 20px rgba(0,0,0,0.4);
+text-align:center;
+}
+
+.card h2{
+margin:0;
+font-size:28px;
+color:white;
+}
+
+.card p{
+margin-top:8px;
+color:#9aa4b2;
+}
+
+.formBox,
+.filterBox,
+.planBox,
+.priorityBox,
+.listBox{
+background:#1b1f27;
+padding:20px;
+border-radius:14px;
+box-shadow:0 8px 20px rgba(0,0,0,0.4);
+margin-bottom:20px;
+}
+
+.sectionTitle{
+margin-top:0;
+margin-bottom:15px;
+font-size:22px;
+}
+
+.formGrid,
+.filterGrid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+input,
+select{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border:1px solid #333;
+border-radius:8px;
+box-sizing:border-box;
+background:#11151b;
+color:white;
+}
+
+input::placeholder{
+color:#777;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#3b82f6;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{
+background:#2563eb;
+}
+
+button:disabled{
+opacity:0.6;
+cursor:not-allowed;
+}
+
+.secondaryBtn{
+background:#475569;
+}
+
+.secondaryBtn:hover{
+background:#334155;
+}
+
+.payBtn{
+width:auto;
+padding:8px 14px;
+background:#22c55e;
+margin-left:10px;
+}
+
+.payBtn:hover{
+background:#16a34a;
+}
+
+.editBtn{
+width:auto;
+padding:8px 14px;
+background:#f59e0b;
+margin-left:10px;
+color:#111827;
+}
+
+.editBtn:hover{
+background:#d97706;
+}
+
+.deleteBtn{
+width:auto;
+padding:8px 14px;
+background:#ef4444;
+margin-left:10px;
+}
+
+.deleteBtn:hover{
+background:#dc2626;
+}
+
+.status{
+padding:5px 10px;
+border-radius:8px;
+font-size:12px;
+background:#4b1d1d;
+color:#ff8d8d;
+display:inline-block;
+}
+
+.status.paid{
+background:#16391d;
+color:#6eff92;
+}
+
+.tag{
+padding:5px 10px;
+border-radius:8px;
+font-size:12px;
+display:inline-block;
+margin-left:8px;
+background:#374151;
+color:#e5e7eb;
+}
+
+.priority-high{
+background:#78350f;
+color:#fcd34d;
+}
+
+.priority-medium{
+background:#1e3a8a;
+color:#bfdbfe;
+}
+
+.priority-low{
+background:#374151;
+color:#cbd5e1;
+}
+
+ul{
+padding:0;
+margin:0;
+}
+
+li{
+list-style:none;
+background:#11151b;
+padding:15px;
+margin-bottom:10px;
+border-radius:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.3);
+gap:10px;
+}
+
+.debtInfo{
+flex:1;
+}
+
+.debtName{
+font-size:18px;
+font-weight:bold;
+margin-bottom:6px;
+}
+
+.debtMeta{
+color:#9aa4b2;
+font-size:14px;
+margin-bottom:8px;
+}
+
+.actions{
+display:flex;
+flex-wrap:wrap;
+align-items:center;
+justify-content:flex-end;
+}
+
+.priorityItem,
+.planItem{
+background:#11151b;
+padding:14px;
+border-radius:12px;
+margin-bottom:10px;
+}
+
+.muted{
+color:#9aa4b2;
+}
+
+@media(max-width:800px){
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+.formGrid,
+.filterGrid{
+grid-template-columns:1fr;
+}
+li{
+flex-direction:column;
+align-items:flex-start;
+}
+.actions{
+justify-content:flex-start;
+}
+}
+
+@media(max-width:500px){
+.stats{
+grid-template-columns:1fr;
+}
+.bigDebt{
+font-size:36px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="hero">
+  <h1>🌙 Kronofogden Dashboard</h1>
+  <div class="bigDebt" id="heroTotalDebt">0 kr</div>
+  <div class="heroText" id="overviewText">Du har betalat 0 av 0 skulder</div>
+
+  <div class="progressBox">
+    <div class="progressTop">
+      <span>Framsteg</span>
+      <span id="progressText">0%</span>
+    </div>
+    <div class="progressBar">
+      <div class="progressFill" id="progressFill"></div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="card">
+    <h2 id="totalDebt">0 kr</h2>
+    <p>Total skuld</p>
+  </div>
+
+  <div class="card">
+    <h2 id="debtCount">0</h2>
+    <p>Antal skulder</p>
+  </div>
+
+  <div class="card">
+    <h2 id="paidCount">0</h2>
+    <p>Betalda</p>
+  </div>
+
+  <div class="card">
+    <h2 id="unpaidCount">0</h2>
+    <p>Obetalda</p>
+  </div>
+</div>
+
+<div class="formBox">
+  <h2 class="sectionTitle">Lägg till eller redigera skuld</h2>
+
+  <input type="hidden" id="editId">
+
+  <div class="formGrid">
+    <div>
+      <input id="name" placeholder="Namn">
+    </div>
+
+    <div>
+      <input id="amount" type="number" placeholder="Belopp">
+    </div>
+
+    <div>
+      <select id="priority">
+        <option value="high">Hög prioritet</option>
+        <option value="medium" selected>Medel prioritet</option>
+        <option value="low">Låg prioritet</option>
+      </select>
+    </div>
+
+    <div>
+      <input id="monthlyPayment" type="number" placeholder="Månadsbetalning">
+    </div>
+  </div>
+
+  <button id="saveBtn" onclick="saveDebt()">Spara skuld</button>
+  <button class="secondaryBtn" onclick="resetForm()" style="margin-top:10px;">Rensa</button>
+</div>
+
+<div class="filterBox">
+  <h2 class="sectionTitle">Filter och plan</h2>
+
+  <div class="filterGrid">
+    <div>
+      <input id="searchInput" placeholder="Sök skuld..." oninput="loadDebts()">
+    </div>
+
+    <div>
+      <select id="statusFilter" onchange="loadDebts()">
+        <option value="all">Alla statusar</option>
+        <option value="unpaid">Endast obetalda</option>
+        <option value="paid">Endast betalda</option>
+      </select>
+    </div>
+
+    <div>
+      <select id="sortBy" onchange="loadDebts()">
+        <option value="priority">Sortera efter prioritet</option>
+        <option value="amount_desc">Störst belopp först</option>
+        <option value="amount_asc">Minst belopp först</option>
+        <option value="name_asc">Namn A-Ö</option>
+      </select>
+    </div>
+
+    <div>
+      <input id="monthlyBudget" type="number" placeholder="Din budget per månad" oninput="renderPaymentPlan(window.currentDebts || [])">
+    </div>
+  </div>
+</div>
+
+<div class="priorityBox">
+  <h2 class="sectionTitle">Prioritering</h2>
+  <div id="priorityList"></div>
+</div>
+
+<div class="planBox">
+  <h2 class="sectionTitle">Betalningsplan</h2>
+  <div id="paymentPlan"></div>
+</div>
+
+<div class="listBox">
+  <h2 class="sectionTitle">Alla skulder</h2>
+  <ul id="debtList"></ul>
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
